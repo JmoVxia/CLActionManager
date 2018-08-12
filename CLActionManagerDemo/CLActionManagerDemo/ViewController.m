@@ -19,7 +19,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(99, 99, 99, 99)];
-    button.backgroundColor = randomColor;
+    button.backgroundColor = [UIColor redColor];
+    [button setTitle:@"push" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(tap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     

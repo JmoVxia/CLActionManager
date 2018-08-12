@@ -19,7 +19,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(99, 99, 99, 99)];
-    button.backgroundColor = randomColor;
+    button.backgroundColor = [UIColor redColor];
+    [button setTitle:@"push" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(tap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     [CLActionManager addObserver:self colorChangeBlock:^(AViewController *observer, UIColor *color) {
@@ -31,6 +32,6 @@
     [self.navigationController pushViewController:[BViewController new] animated:YES];
 }
 -(void)dealloc {
-    NSLog(@"AViewController销毁了");
+    NSLog(@"--------->>>>AViewController销毁了");
 }
 @end

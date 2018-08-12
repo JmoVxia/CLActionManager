@@ -18,18 +18,24 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(99, 99, 99, 99)];
-    button.backgroundColor = randomColor;
+    button.backgroundColor = [UIColor redColor];
+    [button setTitle:@"变色" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(changeColor) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
-    [CLActionManager addObserver:self colorChangeBlock:^(BViewController *observer, UIColor *color) {
-        observer.view.backgroundColor = color;
-        NSLog(@"BViewController收到颜色变化");
-    }];
+    // 开启异步子线程
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (NSInteger i = 0; i < 100; i++) {
+            [CLActionManager addObserver:self colorChangeBlock:^(BViewController *observer, UIColor *color) {
+                observer.view.backgroundColor = color;
+                NSLog(@"BViewController收到颜色变化");
+            }];
+        }
+    });
 }
 - (void)changeColor {
     [CLActionManager actionWithColor:randomColor];
 }
 -(void)dealloc {
-    NSLog(@"BViewController销毁了");
+    NSLog(@"++++++++++++>>>>BViewController销毁了");
 }
 @end

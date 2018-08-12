@@ -17,10 +17,21 @@
 
 
 
+/**
+ 添加颜色变化观察者
+
+ @param observer 观察者
+ @param block 变化回掉，在主线程调用就在主线程回掉，在子线程调用，就在子线程回掉
+ */
 + (void)addObserver:(id)observer colorChangeBlock:(void(^)(id observer, UIColor *color))block;
 
 
 
+/**
+ 颜色变化调用
+
+ @param color 颜色
+ */
 + (void)actionWithColor:(UIColor *)color;
 
 
