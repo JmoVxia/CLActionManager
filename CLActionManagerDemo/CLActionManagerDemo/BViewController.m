@@ -25,15 +25,18 @@
     // 开启异步子线程
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         for (NSInteger i = 0; i < 100; i++) {
-            [CLActionManager addObserver:self colorChangeBlock:^(BViewController *observer, UIColor *color) {
-                observer.view.backgroundColor = color;
+            [CLActionManager addObserver:self identifier:@"color" block:^(BViewController *observer, NSDictionary *dictionary) {
+                observer.view.backgroundColor = [dictionary objectForKey:@"color"];
                 NSLog(@"BViewController收到颜色变化");
             }];
         }
     });
 }
 - (void)changeColor {
-    [CLActionManager actionWithColor:randomColor];
+    NSDictionary *dict = @{
+                           @"color" : randomColor,
+                           };
+    [CLActionManager actionWithDictionary:dict identifier:@"color"];
 }
 -(void)dealloc {
     NSLog(@"++++++++++++>>>>BViewController销毁了");

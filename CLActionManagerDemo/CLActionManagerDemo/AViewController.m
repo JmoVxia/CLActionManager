@@ -23,7 +23,9 @@
     [button setTitle:@"push" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(tap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
-    [CLActionManager addObserver:self colorChangeBlock:^(AViewController *observer, UIColor *color) {
+    
+    [CLActionManager addObserver:self identifier:@"color" block:^(AViewController *observer, NSDictionary *dictionary) {
+        UIColor *color = [dictionary objectForKey:@"color"];
         observer.view.backgroundColor = color;
         NSLog(@"AViewController收到颜色变化");
     }];

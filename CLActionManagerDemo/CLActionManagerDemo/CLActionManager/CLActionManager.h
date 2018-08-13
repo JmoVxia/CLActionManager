@@ -14,25 +14,22 @@
 
 @interface CLActionManager : NSObject
 
-
-
-
 /**
- 添加颜色变化观察者
+ 添加观察者
 
  @param observer 观察者
- @param block 变化回掉，在主线程调用就在主线程回掉，在子线程调用，就在子线程回掉
+ @param identifier 标识
+ @param block 数据回掉
  */
-+ (void)addObserver:(id)observer colorChangeBlock:(void(^)(id observer, UIColor *color))block;
-
-
++ (void)addObserver:(id)observer identifier:(NSString *)identifier block:(void(^)(id observer, NSDictionary *dictionary))block;
 
 /**
- 颜色变化调用
+ 调用
 
- @param color 颜色
+ @param dictionary 数据
+ @param identifier 标识符
  */
-+ (void)actionWithColor:(UIColor *)color;
++ (void)actionWithDictionary:(NSDictionary *)dictionary identifier:(NSString *)identifier;
 
 
 

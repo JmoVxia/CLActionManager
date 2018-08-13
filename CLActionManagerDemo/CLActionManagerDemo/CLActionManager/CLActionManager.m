@@ -58,12 +58,12 @@ static CLActionManager *_manager = nil;
     return _manager;
 }
 
-+ (void)addObserver:(id)observer colorChangeBlock:(void(^)(id observer, UIColor *color))block {
++ (void)addObserver:(id)observer identifier:(NSString *)identifier block:(void(^)(id observer, NSDictionary *dictionary))block;{
     //增加信号保证线程安全
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置属性
     objc_setAssociatedObject(observer, CLBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"colorChangeBlock-%@",NSStringFromClass([observer class])];
+    NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),identifier];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
@@ -71,20 +71,20 @@ static CLActionManager *_manager = nil;
 
 
 
-+ (void)actionWithColor:(UIColor *)color {
++ (void)actionWithDictionary:(NSDictionary *)dictionary identifier:(NSString *)identifier {
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //key数组
     NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].mapTable keyEnumerator] allObjects];
     //遍历查找所有key
     [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         //找出对应的观察者
-        if ([key containsString:@"colorChangeBlock"]) {
+        if ([key containsString:identifier]) {
             id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
             //取出block
-            void(^block)(id observer, UIColor *color) = objc_getAssociatedObject(observer, CLBlockKey);
+            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLBlockKey);
             //调用
             if (block) {
-                block(observer, color);
+                block(observer, dictionary);
             }
         }
     }];
