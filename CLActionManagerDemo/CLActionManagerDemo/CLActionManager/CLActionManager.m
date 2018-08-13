@@ -64,7 +64,7 @@ static CLActionManager *_manager = nil;
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置属性
     objc_setAssociatedObject(observer, CLBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"%@-%@",[self MD5ForUpper32Bate:NSStringFromClass([observer class])],identifier];
+    NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),[self MD5ForUpper32Bate:identifier]];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
@@ -79,7 +79,7 @@ static CLActionManager *_manager = nil;
     //遍历查找所有key
     [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         //找出对应的观察者
-        if ([key containsString:identifier]) {
+        if ([key containsString:[self MD5ForUpper32Bate:identifier]]) {
             id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
             //取出block
             void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLBlockKey);
