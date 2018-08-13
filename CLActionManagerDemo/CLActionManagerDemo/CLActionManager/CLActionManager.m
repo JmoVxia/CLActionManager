@@ -8,6 +8,7 @@
 
 #import "CLActionManager.h"
 #import <objc/message.h>
+#import <CommonCrypto/CommonDigest.h>
 
 static void *CLBlockKey = "CLBlockKey";
 
@@ -63,7 +64,7 @@ static CLActionManager *_manager = nil;
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置属性
     objc_setAssociatedObject(observer, CLBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),identifier];
+    NSString *key = [NSString stringWithFormat:@"%@-%@",[self MD5ForUpper32Bate:NSStringFromClass([observer class])],identifier];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
@@ -90,6 +91,22 @@ static CLActionManager *_manager = nil;
     }];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
 }
-
+/**
+ 32位 大写
+ */
++(NSString *)MD5ForUpper32Bate:(NSString *)str{
+    
+    //要进行UTF8的转码
+    const char* input = [str UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(input, (CC_LONG)strlen(input), result);
+    
+    NSMutableString *digest = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+    for (NSInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++) {
+        [digest appendFormat:@"%02X", result[i]];
+    }
+    
+    return digest;
+}
 
 @end
