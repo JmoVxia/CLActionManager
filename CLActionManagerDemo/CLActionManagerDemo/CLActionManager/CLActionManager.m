@@ -10,7 +10,9 @@
 #import <objc/message.h>
 #import <CommonCrypto/CommonDigest.h>
 
-static void *CLBlockKey = "CLBlockKey";
+static void *CLActionBlockKey = "CLActionBlockKey";
+static void *CLActionMainThread = "CLActionMainThread";
+static void *CLActionMethodType = "CLActionMethodType";
 
 
 @interface CLActionManager ()
@@ -59,11 +61,75 @@ static CLActionManager *_manager = nil;
     return _manager;
 }
 
-+ (void)addObserver:(id)observer identifier:(NSString *)identifier block:(void(^)(id observer, NSDictionary *dictionary))block;{
++ (void)addObserver:(id)observer actionType:(CLActionType)actionType mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block {
+    //增加信号保证线程安全
+    dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
+    //动态设置block属性
+    objc_setAssociatedObject(observer, CLActionBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    //动态设置是否主线程
+    objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    //动态设置方法类型
+    objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:1], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),[self keyWithActionType:actionType]];
+    //添加到字典
+    [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
+    dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
+}
+
+
++ (void)actionWithDictionary:(NSDictionary *)dictionary actionType:(CLActionType)actionType {
+    dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
+    //key数组
+    NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].mapTable keyEnumerator] allObjects];
+    //遍历查找所有key
+    [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger __unused idx, BOOL * _Nonnull __unused stop) {
+        //找出对应的观察者
+        if ([key containsString:[self keyWithActionType:actionType]]) {
+            id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
+            //取出block
+            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlockKey);
+            BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
+            BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@1];
+            //block存在并且是对应方法添加，调用block
+            if (block && actionMethod) {
+                if (mainThread) {
+                    //主线程
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        block(observer, dictionary);
+                    });
+                }else {
+                    //子线程
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        block(observer, dictionary);
+                    });
+                }
+            }
+        }
+    }];
+    dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
+}
+
++ (NSString *)keyWithActionType:(CLActionType)actionType {
+    NSString *key;
+    switch (actionType) {
+        case CLActionTextChange:
+            key = @"CLActionTextChange";
+            break;
+        case CLActionColorChange:
+            key = @"CLActionColorChange";
+            break;
+    }
+    return [self MD5ForUpper32Bate:key];
+}
+
+
++ (void)addObserver:(id)observer identifier:(NSString *)identifier mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block {
     //增加信号保证线程安全
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置属性
-    objc_setAssociatedObject(observer, CLBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(observer, CLActionBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:0], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),[self MD5ForUpper32Bate:identifier]];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
@@ -82,10 +148,22 @@ static CLActionManager *_manager = nil;
         if ([key containsString:[self MD5ForUpper32Bate:identifier]]) {
             id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
             //取出block
-            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLBlockKey);
+            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlockKey);
+            BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
+            BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@0];
             //调用
-            if (block) {
-                block(observer, dictionary);
+            if (block && actionMethod) {
+                if (mainThread) {
+                    //主线程
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        block(observer, dictionary);
+                    });
+                }else {
+                    //子线程
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        block(observer, dictionary);
+                    });
+                }
             }
         }
     }];
@@ -94,7 +172,7 @@ static CLActionManager *_manager = nil;
 /**
  32位 大写
  */
-+(NSString *)MD5ForUpper32Bate:(NSString *)str{
++ (NSString *)MD5ForUpper32Bate:(NSString *)str{
     
     //要进行UTF8的转码
     const char* input = [str UTF8String];
