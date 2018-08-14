@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
 
 
 /**
- 根据标识符添加观察者
+ 根据类型添加加观察者
  
  @param observer 观察者
  @param actionType 响应类型
@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
 + (void)addObserver:(id)observer actionType:(CLActionType)actionType mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block;
 
 /**
- 调用
+ 根据类型调用
  
  @param dictionary 数据
  @param actionType 响应类型
@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
 
 
 /**
- 添加观察者
+ 根据标识符添加观察者
 
  @param observer 观察者
  @param identifier 标识
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
 + (void)addObserver:(id)observer identifier:(NSString *)identifier mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block;
 
 /**
- 调用
+ 根据标识符调用
 
  @param dictionary 数据
  @param identifier 标识符

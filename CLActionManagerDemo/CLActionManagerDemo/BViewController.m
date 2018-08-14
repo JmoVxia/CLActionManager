@@ -73,7 +73,7 @@
 
 
 
-
+//MARK:JmoVxia---生成带文字随机图片
 - (NSMutableString*)randomCreatChinese:(NSInteger)count{
     NSMutableString*randomChineseString =@"".mutableCopy;
     for(NSInteger i =0; i < count; i++){

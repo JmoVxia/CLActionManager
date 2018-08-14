@@ -10,16 +10,28 @@
 #import "CLActionManager.h"
 @implementation CLHeaderView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        /*方式一
         [CLActionManager addObserver:self actionType:CLActionImageChange mainThread:YES block:^(CLHeaderView *observer, NSDictionary *dictionary) {
+            //判断是不是收到自己变化
             if (observer != [dictionary objectForKey:@"observer"]) {
                 NSLog(@"收到其他地方头像变化了");
                 observer.image = [dictionary objectForKey:@"image"];
             }
         }];
+        */
+        
+        //方式二
+        [CLActionManager addObserver:self identifier:@"imageChange" mainThread:YES block:^(CLHeaderView *observer, NSDictionary *dictionary) {
+            //判断是不是收到自己变化
+            if (observer != [dictionary objectForKey:@"observer"]) {
+                NSLog(@"收到其他地方头像变化了");
+                observer.image = [dictionary objectForKey:@"image"];
+            }
+        }];
+         
     }
     return self;
 }
@@ -29,7 +41,12 @@
                            @"observer" : self,
                            @"image" : image,
                            };
+    /*方式一
     [CLActionManager actionWithDictionary:dict actionType:CLActionImageChange];
+    */
+    //方式二
+    [CLActionManager actionWithDictionary:dict identifier:@"imageChange"];
+    
 }
 
 -(void)dealloc {

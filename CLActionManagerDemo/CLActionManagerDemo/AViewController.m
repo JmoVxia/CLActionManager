@@ -26,16 +26,18 @@
     [button addTarget:self action:@selector(tap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     
-//    [CLActionManager addObserver:self identifier:@"color" mainThread:YES block:^(AViewController *observer, NSDictionary *dictionary) {
-//        UIColor *color = [dictionary objectForKey:@"color"];
-//        observer.view.backgroundColor = color;
-//        NSLog(@"AViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
-//    }];
     
     CLHeaderView *headerView = [[CLHeaderView alloc] initWithFrame:CGRectMake(199, 199, 99, 99)];
     headerView.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:headerView];
     
+    
+//    [CLActionManager addObserver:self identifier:@"color" mainThread:YES block:^(AViewController *observer, NSDictionary *dictionary) {
+//        UIColor *color = [dictionary objectForKey:@"color"];
+//        observer.view.backgroundColor = color;
+//        NSLog(@"AViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
+//    }];
+
     
     [CLActionManager addObserver:self actionType:CLActionColorChange mainThread:YES block:^(AViewController *observer, NSDictionary *dictionary) {
         UIColor *color = [dictionary objectForKey:@"color"];

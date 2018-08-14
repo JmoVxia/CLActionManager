@@ -8,9 +8,8 @@
 
 #import "CLActionManager.h"
 #import <objc/message.h>
-#import <CommonCrypto/CommonDigest.h>
 
-static void *CLActionBlockKey = "CLActionBlockKey";
+static void *CLActionBlock = "CLActionBlock";
 static void *CLActionMainThread = "CLActionMainThread";
 static void *CLActionMethodType = "CLActionMethodType";
 
@@ -64,13 +63,14 @@ static CLActionManager *_manager = nil;
 + (void)addObserver:(id)observer actionType:(CLActionType)actionType mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block {
     //增加信号保证线程安全
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
-    //动态设置block属性
-    objc_setAssociatedObject(observer, CLActionBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    //动态设置block
+    objc_setAssociatedObject(observer, CLActionBlock, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     //动态设置是否主线程
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    //动态设置方法类型
+    //动态设置方法类型，用于保障监听和调用方式成对，互不干扰
     objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:1], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"%@-%@-%@",NSStringFromClass([observer class]), [NSString stringWithFormat:@"%p",observer], [self keyWithActionType:actionType]];
+    //内存地址+MD5Key，使用内存地址保证一个对象只监听一次，增加MD5Key保证是同一类型
+    NSString *key = [NSString stringWithFormat:@"%@-%@",[NSString stringWithFormat:@"%p",observer], [self keyWithActionType:actionType]];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
@@ -83,11 +83,11 @@ static CLActionManager *_manager = nil;
     NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].mapTable keyEnumerator] allObjects];
     //遍历查找所有key
     [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger __unused idx, BOOL * _Nonnull __unused stop) {
-        //找出对应的观察者
+        //找出对应类型的观察者
         if ([key containsString:[self keyWithActionType:actionType]]) {
             id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
             //取出block
-            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlockKey);
+            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlock);
             BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
             BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@1];
             //block存在并且是对应方法添加，调用block
@@ -122,7 +122,7 @@ static CLActionManager *_manager = nil;
             key = @"CLActionImageChange";
             break;
     }
-    return [self MD5ForUpper32Bate:key];
+    return key;
 }
 
 
@@ -130,10 +130,10 @@ static CLActionManager *_manager = nil;
     //增加信号保证线程安全
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置属性
-    objc_setAssociatedObject(observer, CLActionBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(observer, CLActionBlock, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:0], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"%@-%@-%@",NSStringFromClass([observer class]), [NSString stringWithFormat:@"%p",observer], [self MD5ForUpper32Bate:identifier]];
+    NSString *key = [NSString stringWithFormat:@"%@-%@",[NSString stringWithFormat:@"%p",observer], identifier];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
@@ -148,10 +148,10 @@ static CLActionManager *_manager = nil;
     //遍历查找所有key
     [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
         //找出对应的观察者
-        if ([key containsString:[self MD5ForUpper32Bate:identifier]]) {
+        if ([key containsString:identifier]) {
             id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
             //取出block
-            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlockKey);
+            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlock);
             BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
             BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@0];
             //调用
@@ -172,22 +172,4 @@ static CLActionManager *_manager = nil;
     }];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
 }
-/**
- 32位 大写
- */
-+ (NSString *)MD5ForUpper32Bate:(NSString *)str{
-    
-    //要进行UTF8的转码
-    const char* input = [str UTF8String];
-    unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(input, (CC_LONG)strlen(input), result);
-    
-    NSMutableString *digest = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
-    for (NSInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++) {
-        [digest appendFormat:@"%02X", result[i]];
-    }
-    
-    return digest;
-}
-
 @end
