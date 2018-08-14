@@ -70,7 +70,7 @@ static CLActionManager *_manager = nil;
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     //动态设置方法类型
     objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:1], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),[self keyWithActionType:actionType]];
+    NSString *key = [NSString stringWithFormat:@"%@-%@-%@",NSStringFromClass([observer class]), [NSString stringWithFormat:@"%p",observer], [self keyWithActionType:actionType]];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
@@ -118,6 +118,9 @@ static CLActionManager *_manager = nil;
         case CLActionColorChange:
             key = @"CLActionColorChange";
             break;
+        case CLActionImageChange:
+            key = @"CLActionImageChange";
+            break;
     }
     return [self MD5ForUpper32Bate:key];
 }
@@ -130,7 +133,7 @@ static CLActionManager *_manager = nil;
     objc_setAssociatedObject(observer, CLActionBlockKey, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:0], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    NSString *key = [NSString stringWithFormat:@"%@-%@",NSStringFromClass([observer class]),[self MD5ForUpper32Bate:identifier]];
+    NSString *key = [NSString stringWithFormat:@"%@-%@-%@",NSStringFromClass([observer class]), [NSString stringWithFormat:@"%p",observer], [self MD5ForUpper32Bate:identifier]];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);

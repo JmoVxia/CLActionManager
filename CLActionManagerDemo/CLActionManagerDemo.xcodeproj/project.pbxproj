@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C6603DB2122891A00CEED5A /* CLHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C6603DA2122891A00CEED5A /* CLHeaderView.m */; };
 		0CB5B55F21200839006A7E9E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB5B55E21200839006A7E9E /* AppDelegate.m */; };
 		0CB5B56221200839006A7E9E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB5B56121200839006A7E9E /* ViewController.m */; };
 		0CB5B56721200839006A7E9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CB5B56621200839006A7E9E /* Assets.xcassets */; };
@@ -18,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C6603D92122891A00CEED5A /* CLHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLHeaderView.h; sourceTree = "<group>"; };
+		0C6603DA2122891A00CEED5A /* CLHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CLHeaderView.m; sourceTree = "<group>"; };
 		0CB5B55A21200839006A7E9E /* CLActionManagerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CLActionManagerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CB5B55D21200839006A7E9E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0CB5B55E21200839006A7E9E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -74,6 +77,8 @@
 				0CB5B59421200A1F006A7E9E /* AViewController.m */,
 				0CB5B59621200A27006A7E9E /* BViewController.h */,
 				0CB5B59721200A27006A7E9E /* BViewController.m */,
+				0C6603D92122891A00CEED5A /* CLHeaderView.h */,
+				0C6603DA2122891A00CEED5A /* CLHeaderView.m */,
 				0CB5B56621200839006A7E9E /* Assets.xcassets */,
 				0CB5B56821200839006A7E9E /* LaunchScreen.storyboard */,
 				0CB5B56B21200839006A7E9E /* Info.plist */,
@@ -163,6 +168,7 @@
 				0CB5B5922120084A006A7E9E /* CLActionManager.m in Sources */,
 				0CB5B59821200A27006A7E9E /* BViewController.m in Sources */,
 				0CB5B59521200A1F006A7E9E /* AViewController.m in Sources */,
+				0C6603DB2122891A00CEED5A /* CLHeaderView.m in Sources */,
 				0CB5B56221200839006A7E9E /* ViewController.m in Sources */,
 				0CB5B56D21200839006A7E9E /* main.m in Sources */,
 				0CB5B55F21200839006A7E9E /* AppDelegate.m in Sources */,

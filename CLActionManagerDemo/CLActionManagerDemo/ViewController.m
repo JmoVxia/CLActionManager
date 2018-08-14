@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "CLActionManager.h"
 #import "AViewController.h"
+#import "CLHeaderView.h"
 @interface ViewController ()
 
 @end
@@ -29,10 +30,19 @@
 //        NSLog(@"ViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
 //    }];
     
+    
+    CLHeaderView *headerView = [[CLHeaderView alloc] initWithFrame:CGRectMake(199, 199, 99, 99)];
+    headerView.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:headerView];
+    
+    
+    
+    
     [CLActionManager addObserver:self actionType:CLActionColorChange mainThread:YES block:^(ViewController *observer, NSDictionary *dictionary) {
         observer.view.backgroundColor = [dictionary objectForKey:@"color"];
         NSLog(@"ViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
     }];
+    
     
 }
 

@@ -9,6 +9,8 @@
 #import "AViewController.h"
 #import "CLActionManager.h"
 #import "BViewController.h"
+#import "CLHeaderView.h"
+
 @interface AViewController ()
 
 @end
@@ -30,13 +32,16 @@
 //        NSLog(@"AViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
 //    }];
     
+    CLHeaderView *headerView = [[CLHeaderView alloc] initWithFrame:CGRectMake(199, 199, 99, 99)];
+    headerView.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:headerView];
+    
+    
     [CLActionManager addObserver:self actionType:CLActionColorChange mainThread:YES block:^(AViewController *observer, NSDictionary *dictionary) {
         UIColor *color = [dictionary objectForKey:@"color"];
         observer.view.backgroundColor = color;
         NSLog(@"AViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
     }];
-    
-    
 }
 - (void)tap {
     [self.navigationController pushViewController:[BViewController new] animated:YES];

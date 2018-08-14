@@ -15,6 +15,7 @@
 typedef NS_ENUM(NSUInteger, CLActionType) {
     CLActionColorChange,///<颜色变化
     CLActionTextChange,///<文字变化
+    CLActionImageChange,///<图片变化
 };
 
 
