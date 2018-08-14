@@ -20,11 +20,13 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
 
 
 @interface CLActionManager : NSObject
-
+/*
+所有响应生命周期和观察者一样
+ */
 
 
 /**
- 根据类型添加加观察者
+ 根据类型添加观察者
  
  @param observer 观察者
  @param actionType 响应类型
