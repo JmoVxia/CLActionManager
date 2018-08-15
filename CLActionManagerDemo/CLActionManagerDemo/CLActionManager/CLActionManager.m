@@ -47,7 +47,8 @@ static CLActionManager *_manager = nil;
         //弱引用value，强引用key
         self.mapTable = [NSMapTable mapTableWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory];
         //信号
-        self.semaphore = dispatch_semaphore_create(1);
+        self.semaphore = dispatch_semaphore_create(0);
+        dispatch_semaphore_signal(self.semaphore);
     });
     return _manager;
 }
