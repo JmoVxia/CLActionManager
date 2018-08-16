@@ -22,16 +22,16 @@
             }
         }];
         */
-        
+
         //方式二
         [CLActionManager addObserver:self identifier:@"imageChange" mainThread:YES block:^(CLHeaderView *observer, NSDictionary *dictionary) {
             //判断是不是收到自己变化
-            if (observer != [dictionary objectForKey:@"observer"]) {
-                NSLog(@"收到其他地方头像变化了");
+            if (![observer isEqual:[dictionary objectForKey:@"observer"]]) {
+                NSLog(@"收到其他地方头像变化了,当前线程--%@",[NSThread currentThread]);
                 observer.image = [dictionary objectForKey:@"image"];
             }
         }];
-         
+        self.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -46,11 +46,10 @@
     */
     //方式二
     [CLActionManager actionWithDictionary:dict identifier:@"imageChange"];
-    
 }
 
 -(void)dealloc {
-    NSLog(@"头像View销毁了----%@",self);
+    NSLog(@"头像View销毁了----%p",self);
 }
 
 @end
