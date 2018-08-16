@@ -70,7 +70,7 @@ static CLActionManager *_manager = nil;
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     //动态设置方法类型，用于保障监听和调用方式成对，互不干扰
     objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:1], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    //内存地址+MD5Key，使用内存地址保证一个对象只监听一次，增加MD5Key保证是同一类型
+    //内存地址+key，使用内存地址保证一个对象只监听一次，key保证是同一类型
     NSString *key = [NSString stringWithFormat:@"%@-%@",[NSString stringWithFormat:@"%p",observer], [self keyWithActionType:actionType]];
     //添加到字典
     [[CLActionManager sharedManager].mapTable setObject:observer forKey:key];
