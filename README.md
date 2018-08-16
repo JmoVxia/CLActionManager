@@ -249,7 +249,10 @@ static CLActionManager *_manager = nil;
 ```
 # 测试结果
 ![效果图](https://upload-images.jianshu.io/upload_images/1979970-dbde3cfe739c248e.gif?imageMogr2/auto-orient/strip)
+
+
 测试效果已经达到我们需要的效果，看一下打印结果，所有的观察者的生命周期都没有受到影响
+
 ```
 AViewController收到颜色变化,当前线程<NSThread: 0x608000263000>{number = 1, name = main}
 BViewController收到颜色变化，当前线程<NSThread: 0x608000263000>{number = 1, name = main}
