@@ -82,31 +82,33 @@ static CLActionManager *_manager = nil;
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //key数组
     NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].mapTable keyEnumerator] allObjects];
+    //匹配出对应key
+    NSString *identifier = [self keyWithActionType:actionType];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@",identifier];
+    NSArray<NSString *> *array = [keyArray filteredArrayUsingPredicate:predicate];
     //遍历查找所有key
-    [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger __unused idx, BOOL * _Nonnull __unused stop) {
+    for (NSString *key in array) {
         //找出对应类型的观察者
-        if ([key containsString:[self keyWithActionType:actionType]]) {
-            id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
-            //取出block
-            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlock);
-            BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
-            BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@1];
-            //block存在并且是对应方法添加，调用block
-            if (block && actionMethod) {
-                if (mainThread) {
-                    //主线程
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        block(observer, dictionary);
-                    });
-                }else {
-                    //子线程
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        block(observer, dictionary);
-                    });
-                }
+        id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
+        //取出block
+        void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlock);
+        BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
+        BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@1];
+        //block存在并且是对应方法添加，调用block
+        if (block && actionMethod) {
+            if (mainThread) {
+                //主线程
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    block(observer, dictionary);
+                });
+            }else {
+                //子线程
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    block(observer, dictionary);
+                });
             }
         }
-    }];
+    }
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
 }
 
@@ -146,31 +148,33 @@ static CLActionManager *_manager = nil;
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //key数组
     NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].mapTable keyEnumerator] allObjects];
-    //遍历查找所有key
-    [keyArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+    //匹配出对应key
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@",identifier];
+    NSArray<NSString *> *array = [keyArray filteredArrayUsingPredicate:predicate];
+    //遍历调用
+    for (NSString *key in array) {
         //找出对应的观察者
-        if ([key containsString:identifier]) {
-            id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
-            //取出block
-            void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlock);
-            BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
-            BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@0];
-            //调用
-            if (block && actionMethod) {
-                if (mainThread) {
-                    //主线程
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        block(observer, dictionary);
-                    });
-                }else {
-                    //子线程
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        block(observer, dictionary);
-                    });
-                }
+        id observer = [[CLActionManager sharedManager].mapTable objectForKey:key];
+        //取出block
+        void(^block)(id observer, NSDictionary *dictionary) = objc_getAssociatedObject(observer, CLActionBlock);
+        BOOL mainThread = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMainThread) boolValue];
+        BOOL actionMethod = [(NSNumber *)objc_getAssociatedObject(observer, CLActionMethodType) isEqualToNumber:@0];
+        //调用
+        if (block && actionMethod) {
+            if (mainThread) {
+                //主线程
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    block(observer, dictionary);
+                });
+            }else {
+                //子线程
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    block(observer, dictionary);
+                });
             }
         }
-    }];
+    }
+    
     dispatch_semaphore_signal([CLActionManager sharedManager].semaphore);
 }
 @end
