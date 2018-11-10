@@ -65,7 +65,7 @@ static CLActionManager *_manager = nil;
     //增加信号保证线程安全
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置block
-    objc_setAssociatedObject(observer, CLActionBlock, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(observer, CLActionBlock, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
     //动态设置是否主线程
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     //动态设置方法类型，用于保障监听和调用方式成对，互不干扰
@@ -133,7 +133,7 @@ static CLActionManager *_manager = nil;
     //增加信号保证线程安全
     dispatch_semaphore_wait([CLActionManager sharedManager].semaphore, DISPATCH_TIME_FOREVER);
     //动态设置属性
-    objc_setAssociatedObject(observer, CLActionBlock, block, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(observer, CLActionBlock, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
     objc_setAssociatedObject(observer, CLActionMainThread, [NSNumber numberWithBool:mainThread], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(observer, CLActionMethodType, [NSNumber numberWithBool:0], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     NSString *key = [NSString stringWithFormat:@"%@-%@",[NSString stringWithFormat:@"%p",observer], identifier];
