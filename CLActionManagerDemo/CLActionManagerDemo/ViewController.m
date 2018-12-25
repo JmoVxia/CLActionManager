@@ -32,12 +32,10 @@
     headerView.clipsToBounds = YES;
     [self.view addSubview:headerView];
     
-//    [CLActionManager addObserver:self identifier:@"color" mainThread:YES block:^(ViewController *observer, NSDictionary *dictionary) {
-//        observer.view.backgroundColor = [dictionary objectForKey:@"color"];
-//        NSLog(@"ViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
-//    }];
-
-    
+    [CLActionManager addObserver:self identifier:@"CLActionColorChange" mainThread:YES block:^(ViewController *observer, NSDictionary *dictionary) {
+        observer.view.backgroundColor = [dictionary objectForKey:@"color"];
+        NSLog(@"ViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
+    }];
     
     [CLActionManager addObserver:self actionType:CLActionColorChange mainThread:YES block:^(ViewController *observer, NSDictionary *dictionary) {
         observer.view.backgroundColor = [dictionary objectForKey:@"color"];
