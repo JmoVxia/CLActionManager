@@ -48,24 +48,27 @@
         for (NSInteger i = 0; i < 1000; i++) {
             // 开启异步子线程
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                [CLActionManager addObserver:self identifier:@"CLActionTextChange" mainThread:YES block:^(BViewController *observer, NSDictionary *dictionary) {
-//                    observer.view.backgroundColor = [dictionary objectForKey:@"color"];
-//                    NSLog(@"BViewController收到颜色变化，当前线程%@",[NSThread currentThread]);
-//                }];
+                [CLActionManager addObserver:self identifier:@"CLActionColorChange" mainThread:YES block:^(BViewController *observer, NSDictionary *dictionary) {
+                    observer.view.backgroundColor = [dictionary objectForKey:@"color"];
+                    NSLog(@"BViewController收到颜色变化，当前线程%@",[NSThread currentThread]);
+                }];
                 [CLActionManager addObserver:self actionType:CLActionColorChange mainThread:YES block:^(BViewController *observer, NSDictionary *dictionary) {
                     observer.view.backgroundColor = [dictionary objectForKey:@"color"];
                     NSLog(@"BViewController收到颜色变化，当前线程%@",[NSThread currentThread]);
                 }];
             });
         }
+    [CLActionManager addObserver:self actionType:CLActionImageChange mainThread:YES block:^(BViewController *observer, NSDictionary *dictionary) {
+        NSLog(@"BViewController收到图片变化，当前线程%@",[NSThread currentThread]);
+    }];
 }
 - (void)changeColor {
     NSDictionary *dict = @{
                            @"color" : randomColor,
                            };
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        [CLActionManager actionWithDictionary:dict identifier:@"CLActionColorChange"];
-        [CLActionManager actionWithDictionary:dict actionType:CLActionColorChange];
+        [CLActionManager actionWithDictionary:dict identifier:@"CLActionColorChange"];
+//        [CLActionManager actionWithDictionary:dict actionType:CLActionColorChange];
     });
 }
 

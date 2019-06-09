@@ -80,7 +80,7 @@ static CLActionManager *_manager = nil;
     NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].observerMapTable keyEnumerator] allObjects];
     //匹配出对应key
     NSString *identifier = [[self keyWithActionType:actionType] stringByAppendingString:@"-1"];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@",identifier];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF ENDSWITH %@",identifier];
     NSArray<NSString *> *array = [keyArray filteredArrayUsingPredicate:predicate];
     //遍历查找所有key
     for (NSString *key in array) {
@@ -147,7 +147,7 @@ static CLActionManager *_manager = nil;
     //key数组
     NSArray<NSString *> *keyArray = [[[CLActionManager sharedManager].observerMapTable keyEnumerator] allObjects];
     //匹配出对应key
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@",[identifier stringByAppendingString:@"-0"]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF ENDSWITH %@",[identifier stringByAppendingString:@"-0"]];
     NSArray<NSString *> *array = [keyArray filteredArrayUsingPredicate:predicate];
     //遍历查找所有key
     for (NSString *key in array) {
