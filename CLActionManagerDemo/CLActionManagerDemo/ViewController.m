@@ -10,6 +10,8 @@
 #import "CLActionManager.h"
 #import "AViewController.h"
 #import "CLHeaderView.h"
+#import <Masonry/Masonry.h>
+
 @interface ViewController ()
 
 @end
@@ -19,28 +21,38 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor lightGrayColor];
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(99, 99, 99, 99)];
+    UIButton *button = [[UIButton alloc] init];
     button.backgroundColor = [UIColor redColor];
     [button setTitle:@"push" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(tap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     
-    
-    
-    CLHeaderView *headerView = [[CLHeaderView alloc] initWithFrame:CGRectMake(199, 199, 99, 99)];
-    headerView.layer.cornerRadius = 99 * 0.5;
+    CLHeaderView *headerView = [[CLHeaderView alloc] init];
+    headerView.layer.cornerRadius = 100 * 0.5;
     headerView.clipsToBounds = YES;
     [self.view addSubview:headerView];
     
-    [CLActionManager addObserver:self identifier:@"CLActionColorChange" mainThread:YES block:^(ViewController *observer, NSDictionary *dictionary) {
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(100, 100));
+        make.centerX.mas_equalTo(self.view);
+        make.top.mas_equalTo(headerView.mas_bottom).mas_offset(90);
+    }];
+
+    [headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(100, 100));
+        make.centerX.mas_equalTo(self.view);
+        make.top.mas_equalTo(self.mas_topLayoutGuideBottom).mas_offset(100);
+    }];
+
+    [CLActionManager addObserver:self type:CLActionColorChange mainThread:YES actionBlock:^(ViewController *observer, NSDictionary *dictionary) {
         observer.view.backgroundColor = [dictionary objectForKey:@"color"];
-        NSLog(@"ViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
+        NSLog(@"ViewController收到颜色变化,方式一");
+    }];
+    [CLActionManager addObserver:self identifier:@"CLActionColorChange" mainThread:YES actionBlock:^(ViewController *observer, NSDictionary *dictionary) {
+        observer.view.backgroundColor = [dictionary objectForKey:@"color"];
+        NSLog(@"ViewController收到颜色变化,方式二");
     }];
     
-    [CLActionManager addObserver:self actionType:CLActionColorChange mainThread:YES block:^(ViewController *observer, NSDictionary *dictionary) {
-        observer.view.backgroundColor = [dictionary objectForKey:@"color"];
-        NSLog(@"ViewController收到颜色变化,当前线程%@",[NSThread currentThread]);
-    }];
 }
 
 - (void)tap {

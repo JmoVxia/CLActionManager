@@ -10,6 +10,6 @@
 
 @interface CLHeaderView : UIImageView
 
-- (void)loadImage:(UIImage *)image;
+- (void)loadImage:(UIImage *)image type:(NSInteger)type;
 
 @end

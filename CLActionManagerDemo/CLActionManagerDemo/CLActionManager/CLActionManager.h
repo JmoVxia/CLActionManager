@@ -8,12 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define random(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)/255.0]
-#define randomColor random(arc4random_uniform(256), arc4random_uniform(256), arc4random_uniform(256), arc4random_uniform(256))
-
 typedef NS_ENUM(NSUInteger, CLActionType) {
     CLActionColorChange,///<颜色变化
-    CLActionTextChange,///<文字变化
     CLActionImageChange,///<图片变化
 };
 
@@ -27,18 +23,18 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
  根据类型添加观察者
  
  @param observer 观察者
- @param actionType 响应类型
- @param block 数据回掉
+ @param type 监听类型
+ @param actionBlock 监听响应
  */
-+ (void)addObserver:(id)observer actionType:(CLActionType)actionType mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block;
++ (void)addObserver:(id)observer type:(CLActionType)type mainThread:(BOOL)mainThread actionBlock:(void(^)(id observer, NSDictionary *dictionary))actionBlock;
 
 /**
  根据类型调用
  
+ @param type 响应类型
  @param dictionary 数据
- @param actionType 响应类型
  */
-+ (void)actionWithDictionary:(NSDictionary *)dictionary actionType:(CLActionType)actionType;
++ (void)postType:(CLActionType)type dictionary:(NSDictionary *)dictionary;
 
 //------------------------------------字符串作为唯一标识符，内部已经处理，不会和上面枚举方式冲突-------------------------------------
 
@@ -49,17 +45,17 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
  @param observer 观察者
  @param identifier 标识
  @param mainThread 是否在主线程回掉
- @param block 数据回掉
+ @param block 监听响应
  */
-+ (void)addObserver:(id)observer identifier:(NSString *)identifier mainThread:(BOOL)mainThread block:(void(^)(id observer, NSDictionary *dictionary))block;
++ (void)addObserver:(id)observer identifier:(NSString *)identifier mainThread:(BOOL)mainThread actionBlock:(void(^)(id observer, NSDictionary *dictionary))actionBlock;
 
 /**
  根据标识符调用
 
- @param dictionary 数据
  @param identifier 标识符
+ @param dictionary 数据
  */
-+ (void)actionWithDictionary:(NSDictionary *)dictionary identifier:(NSString *)identifier;
++ (void)postIdentifier:(NSString *)identifier dictionary:(NSDictionary *)dictionary;
 
 
 

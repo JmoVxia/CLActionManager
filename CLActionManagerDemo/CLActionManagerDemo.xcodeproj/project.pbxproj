@@ -16,6 +16,7 @@
 		0CB5B5922120084A006A7E9E /* CLActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB5B5912120084A006A7E9E /* CLActionManager.m */; };
 		0CB5B59521200A1F006A7E9E /* AViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB5B59421200A1F006A7E9E /* AViewController.m */; };
 		0CB5B59821200A27006A7E9E /* BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB5B59721200A27006A7E9E /* BViewController.m */; };
+		C9BA98A5BF3EECD188565F90 /* libPods-CLActionManagerDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 153697FEF82DE36D14B55EF4 /* libPods-CLActionManagerDemo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,9 @@
 		0CB5B59421200A1F006A7E9E /* AViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AViewController.m; sourceTree = "<group>"; };
 		0CB5B59621200A27006A7E9E /* BViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BViewController.h; sourceTree = "<group>"; };
 		0CB5B59721200A27006A7E9E /* BViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BViewController.m; sourceTree = "<group>"; };
+		153697FEF82DE36D14B55EF4 /* libPods-CLActionManagerDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CLActionManagerDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3954023B0CC26AE60BF7B29 /* Pods-CLActionManagerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CLActionManagerDemo.debug.xcconfig"; path = "Target Support Files/Pods-CLActionManagerDemo/Pods-CLActionManagerDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		E45A6A1537DF948954B92653 /* Pods-CLActionManagerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CLActionManagerDemo.release.xcconfig"; path = "Target Support Files/Pods-CLActionManagerDemo/Pods-CLActionManagerDemo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,17 +47,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9BA98A5BF3EECD188565F90 /* libPods-CLActionManagerDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A9750E802CD425A74926338 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C3954023B0CC26AE60BF7B29 /* Pods-CLActionManagerDemo.debug.xcconfig */,
+				E45A6A1537DF948954B92653 /* Pods-CLActionManagerDemo.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		0CB5B55121200838006A7E9E = {
 			isa = PBXGroup;
 			children = (
 				0CB5B55C21200839006A7E9E /* CLActionManagerDemo */,
 				0CB5B55B21200839006A7E9E /* Products */,
+				0A9750E802CD425A74926338 /* Pods */,
+				27956DECD818A1D7B90D9411 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +113,14 @@
 			path = CLActionManager;
 			sourceTree = "<group>";
 		};
+		27956DECD818A1D7B90D9411 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				153697FEF82DE36D14B55EF4 /* libPods-CLActionManagerDemo.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -103,6 +128,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0CB5B58621200839006A7E9E /* Build configuration list for PBXNativeTarget "CLActionManagerDemo" */;
 			buildPhases = (
+				9A5AAFBD32638FCBA4FE85AD /* [CP] Check Pods Manifest.lock */,
 				0CB5B55621200839006A7E9E /* Sources */,
 				0CB5B55721200839006A7E9E /* Frameworks */,
 				0CB5B55821200839006A7E9E /* Resources */,
@@ -159,6 +185,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9A5AAFBD32638FCBA4FE85AD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CLActionManagerDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0CB5B55621200839006A7E9E /* Sources */ = {
@@ -301,6 +352,7 @@
 		};
 		0CB5B58721200839006A7E9E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3954023B0CC26AE60BF7B29 /* Pods-CLActionManagerDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -319,6 +371,7 @@
 		};
 		0CB5B58821200839006A7E9E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E45A6A1537DF948954B92653 /* Pods-CLActionManagerDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

@@ -14,38 +14,39 @@
     self = [super initWithFrame:frame];
     if (self) {
         //方式一
-        [CLActionManager addObserver:self actionType:CLActionImageChange mainThread:YES block:^(CLHeaderView *observer, NSDictionary *dictionary) {
+        [CLActionManager addObserver:self type:CLActionImageChange mainThread:YES actionBlock:^(CLHeaderView *observer, NSDictionary *dictionary) {
             //判断是不是收到自己变化
             if (observer != [dictionary objectForKey:@"observer"]) {
-                NSLog(@"收到其他地方头像变化了");
+                NSLog(@"----    方式一   =====收到其他地方头像变化了");
                 observer.image = [dictionary objectForKey:@"image"];
             }
         }];
-        
 
         //方式二
-//        [CLActionManager addObserver:self identifier:@"imageChange" mainThread:YES block:^(CLHeaderView *observer, NSDictionary *dictionary) {
-//            //判断是不是收到自己变化
-//            if (![observer isEqual:[dictionary objectForKey:@"observer"]]) {
-//                NSLog(@"收到其他地方头像变化了,当前线程--%@",[NSThread currentThread]);
-//                observer.image = [dictionary objectForKey:@"image"];
-//            }
-//        }];
+        [CLActionManager addObserver:self identifier:@"CLActionImageChange" mainThread:YES actionBlock:^(CLHeaderView *observer, NSDictionary *dictionary) {
+            //判断是不是收到自己变化
+            if (![observer isEqual:[dictionary objectForKey:@"observer"]]) {
+                NSLog(@"----方式二----收到其他地方头像变化了");
+                observer.image = [dictionary objectForKey:@"image"];
+            }
+        }];
         self.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
-- (void)loadImage:(UIImage *)image {
+- (void)loadImage:(UIImage *)image  type:(NSInteger)type{
     self.image = image;
     NSDictionary *dict = @{
                            @"observer" : self,
                            @"image" : image,
                            };
-    //方式一
-    [CLActionManager actionWithDictionary:dict actionType:CLActionImageChange];
-    
-    //方式二
-//    [CLActionManager actionWithDictionary:dict identifier:@"imageChange"];
+    if (type == 0) {
+        //方式一
+        [CLActionManager postType:CLActionImageChange dictionary:dict];
+    }else {
+        //方式二
+        [CLActionManager postIdentifier:@"CLActionImageChange" dictionary:dict];
+    }
 }
 
 -(void)dealloc {
