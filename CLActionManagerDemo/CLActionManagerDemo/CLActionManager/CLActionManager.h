@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, CLActionType) {
  @param observer 观察者
  @param identifier 标识
  @param mainThread 是否在主线程回掉
- @param block 监听响应
+ @param actionBlock 监听响应
  */
 + (void)addObserver:(id)observer identifier:(NSString *)identifier mainThread:(BOOL)mainThread actionBlock:(void(^)(id observer, NSDictionary *dictionary))actionBlock;
 
